@@ -9,19 +9,30 @@ test('200 returned', function(t) {
 	  .get('/')
 	  .end(function(err, res) {
 	  	var expectedStatus = 200;
-
 	  	t.error(err, 'No error');
 	  	t.same(res.status, expectedStatus, 'Server returns 200');
 	  	t.end(); 
 	   });
 });
 
-test('/message returns 200', function(t) {
+test('/messages returns 200', function(t) {
 	request(app)
-	  .get('/message')
-	  .expect(200)
+	  .get('/messages')
+	  .expect('Content-Type', /json/)
 	  .end(function(err, res) {
-	  	if (err) throw err;
+	  	t.error(err, 'No error');
+	  	t.same(res.status, 200, '/messages returns 200');
+	  	t.end();
 	  });
 });
 
+test('/save returns 200', function(t) {
+	request(app)
+	  .get('/save')
+	  .expect('Content-Type', /json/)
+	  .end(function(err, res) {
+	  	t.error(err, 'No error');
+	  	t.same(res.status, 200, '/save returns 200');
+	  	t.end();
+	  });
+});

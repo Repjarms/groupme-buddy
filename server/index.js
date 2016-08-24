@@ -17,29 +17,32 @@ var cloudant = Cloudant({account: process.env.CLOUDANT_ACCOUNT,
 var database = cloudant.use('messages');
 
 var url = 'https://api.groupme.com/v3/groups/' + group + '/messages?token=' + token;
-var payload = '';
-var last_message = 0;
 
 app.get('/', function(req, res) {
 	res.sendStatus(200);
 });
 
-app.get('/message', function(req, res) {
-	request(url, function(err, res, body) {
-		payload = JSON.parse(body);
+app.get('/save', function(req, res) {
+	request(url, function(err, response, body) {
+		var payload = JSON.parse(body);
 
 		database.insert(payload, function(err, body) {
-			if (err) {
+			if (err)
 				console.log(err);
-			}else{
+			else {
 				console.log(body);
+				res.sendStatus(200);
 			}
-
 		});
-
 	});
-
-	res.sendStatus(200);
 });
+
+app.get('/messages', function(req, res) {
+	database.list({include_docs: true}, function(err, body) {
+		res.send(body);
+		console.log('Documents retrieved');
+	});
+});
+
 
 module.exports = app;
